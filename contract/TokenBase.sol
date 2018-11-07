@@ -6,8 +6,8 @@ import "./LibSafeMath.sol";
 contract TokenBase is IExtendedERC20 {
     using SafeMath for uint256;
 
-    mapping (address => uint256) private _balances;
-    mapping (address => mapping (address => uint256)) private _allowed;
+    mapping(address => uint256) private _balances;
+    mapping(address => mapping(address => uint256)) private _allowed;
 
     uint256 private _totalSupply;
     string private _name;
@@ -29,15 +29,15 @@ contract TokenBase is IExtendedERC20 {
         return _totalSupply;
     }
 
-    function name() public view returns(string) {
+    function name() public view returns (string) {
         return _name;
     }
 
-    function symbol() public view returns(string) {
+    function symbol() public view returns (string) {
         return _symbol;
     }
 
-    function decimals() public view returns(uint8) {
+    function decimals() public view returns (uint8) {
         return _decimals;
     }
 
