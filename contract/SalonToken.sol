@@ -8,18 +8,24 @@ import "./IUpgradeable.sol";
 contract SalonToken is IExtendedERC20, IUpgradeable, Administrative {
     SalonTokenStorage tokenStorage;
     address salonTokenImpl;
+    bool inited = false;
 
     modifier onlyPayloadSize(uint size) {
         require(msg.data.length >= size + 4);
         _;
     }
 
-    constructor(string name, string symbol, uint8 decimals, address implAddr, address storageAddr) public {
+    constructor(address implAddr, address storageAddr) public {
         tokenStorage = SalonTokenStorage(storageAddr);
         salonTokenImpl = implAddr;
+    }
+
+    function init(string name, string symbol, uint8 decimals) external {
+        require(!inited);
         tokenStorage.setName(name);
         tokenStorage.setSymbol(symbol);
         tokenStorage.setDecimals(decimals);
+        inited = true;
     }
 
     function totalSupply() external view returns (uint256) {
