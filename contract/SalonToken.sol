@@ -99,6 +99,8 @@ contract SalonToken is IExtendedERC20, IUpgradeable, Administrative {
     }
 
     function upgrade(address newImpl) external onlyPrivileged {
+        address temp = salonTokenImpl;
         salonTokenImpl = newImpl;
+        emit Upgrade(newImpl, temp);
     }
 }
