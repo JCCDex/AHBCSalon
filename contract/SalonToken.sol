@@ -36,37 +36,66 @@ contract SalonToken is IExtendedERC20, IUpgradeable, Administrative {
 
     function transfer(address to, uint256 value) external onlyPayloadSize(2 * 32) returns (bool) {
         bytes4 methodId = bytes4(keccak256("transfer(address,uint256)"));
-        return salonTokenImpl.delegatecall(methodId, to, value);
+        bool success = salonTokenImpl.delegatecall(methodId, to, value);
+        if(success) {
+            emit Transfer(msg.sender, to, value);
+        }
+        return success;
     }
 
     function approve(address spender, uint256 value) external onlyPayloadSize(2 * 32) returns (bool) {
         bytes4 methodId = bytes4(keccak256("approve(address,uint256)"));
-        return salonTokenImpl.delegatecall(methodId, spender, value);
+        bool success = salonTokenImpl.delegatecall(methodId, spender, value);
+        if(success) {
+            emit Approval(msg.sender, spender, value);
+        }
+        return success;
     }
 
     function transferFrom(address from, address to, uint256 value) external onlyPayloadSize(3 * 32) returns (bool) {
         bytes4 methodId = bytes4(keccak256("transferFrom(address,address,uint256)"));
-        return salonTokenImpl.delegatecall(methodId, from, to, value);
+        bool success = salonTokenImpl.delegatecall(methodId, from, to, value);
+        if(success) {
+            emit Transfer(from, to, value);
+        }
+        return success;
     }
 
     function increaseAllowance(address spender, uint256 addedValue) external onlyPayloadSize(2 * 32) returns (bool) {
         bytes4 methodId = bytes4(keccak256("increaseAllowance(address,uint256)"));
-        return salonTokenImpl.delegatecall(methodId, spender, addedValue);
+        bool success = salonTokenImpl.delegatecall(methodId, spender, addedValue);
+        if(success) {
+            emit Approval(msg.sender, spender, tokenStorage.getAllowed(msg.sender, spender));
+        }
+        return success;
     }
 
     function decreaseAllowance(address spender, uint256 subtractedValue) external onlyPayloadSize(2 * 32) returns (bool) {
         bytes4 methodId = bytes4(keccak256("decreaseAllowance(address,uint256)"));
-        return salonTokenImpl.delegatecall(methodId, spender, subtractedValue);
+        bool success = salonTokenImpl.delegatecall(methodId, spender, subtractedValue);
+        if(success) {
+            emit Approval(msg.sender, spender, tokenStorage.getAllowed(msg.sender, spender));
+        }
+        return success;
     }
 
     function mint(address account, uint256 value) external onlyPrivileged returns (bool) {
         bytes4 methodId = bytes4(keccak256("mint(address,uint256)"));
-        return salonTokenImpl.delegatecall(methodId, account, value);
+        bool success = salonTokenImpl.delegatecall(methodId, account, value);
+        if(success) {
+            emit Mint(account, value);
+            emit Transfer(address(0), account, value);
+        }
+        return success;
     }
 
     function burn(address account, uint256 value) external onlyPrivileged returns (bool) {
         bytes4 methodId = bytes4(keccak256("burn(address,uint256)"));
-        return salonTokenImpl.delegatecall(methodId, account, value);
+        bool success = salonTokenImpl.delegatecall(methodId, account, value);
+        if(success) {
+            emit Burn(account, value);
+        }
+        return success;
     }
 
     function upgrade(address newImpl) external onlyPrivileged {
