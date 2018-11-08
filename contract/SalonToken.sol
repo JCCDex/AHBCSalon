@@ -23,15 +23,15 @@ contract SalonToken is IExtendedERC20, IUpgradeable, Administrative {
     }
 
     function totalSupply() external view returns (uint256) {
-        return tokenStorage.totalSupply();
+        return tokenStorage.getTotalSupply();
     }
 
     function balanceOf(address who) external view returns (uint256) {
-        return tokenStorage.balanceOf(who);
+        return tokenStorage.getBalances(who);
     }
 
     function allowance(address owner, address spender) external view returns (uint256) {
-        return tokenStorage.allowance(owner, spender);
+        return tokenStorage.getAllowed(owner, spender);
     }
 
     function transfer(address to, uint256 value) external onlyPayloadSize(2 * 32) returns (bool) {

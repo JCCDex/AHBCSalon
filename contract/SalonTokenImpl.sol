@@ -46,8 +46,6 @@ contract SalonTokenImpl {
 
         tokenStorage.setTotalSupply(tokenStorage.getTotalSupply().sub(value));
         tokenStorage.setBalances(account, tokenStorage.getBalances(account).sub(value));
-        emit Transfer(account, address(0), value);
-        return true;
     }
 
     function _transfer(address from, address to, uint256 value) internal {

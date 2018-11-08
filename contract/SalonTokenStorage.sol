@@ -56,10 +56,10 @@ contract SalonTokenStorage is Administrative {
     }
 
     function setBalances(address who, uint256 value) public onlyPrivileged {
-        return _balances[who] = value;
+        _balances[who] = value;
     }
 
     function setAllowed(address owner, address spender, uint256 value) public onlyPrivileged {
-        return _allowed[owner][spender] = value;
+        _allowed[owner][spender] = value;
     }
 }
