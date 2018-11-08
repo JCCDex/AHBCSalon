@@ -3,7 +3,7 @@ pragma solidity ^0.4.25;
 import "./Administrative.sol";
 import "./IExtendedERC20.sol";
 
-contract SalonTokenStorage is IExtendedERC20, Administrative {
+contract SalonTokenStorage is Administrative {
     uint256 private _totalSupply;
     string private _name;
     string private _symbol;
