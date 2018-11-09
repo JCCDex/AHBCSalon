@@ -7,12 +7,8 @@ contract SalonTokenImpl is IExtendedERC20, Administrative {
     using SafeMath for uint256;
     SalonTokenStorage tokenStorage;
 
-    constructor(string name, string symbol, uint8 decimals) public {
-        tokenStorage = new SalonTokenStorage();
-
-        tokenStorage.setName(name);
-        tokenStorage.setSymbol(symbol);
-        tokenStorage.setDecimals(decimals);
+    constructor(address storageAddr) public {
+        tokenStorage = SalonTokenStorage(storageAddr);
     }
 
     function name() public view onlyPrivileged returns (string) {

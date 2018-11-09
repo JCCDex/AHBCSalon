@@ -7,6 +7,7 @@ import "./SalonTokenImpl.sol";
 
 contract SalonToken is IExtendedERC20, IUpgradeable, Administrative {
     SalonTokenImpl public tokenImpl;
+    SalonTokenStorage public tokenStorage;
 
 
     modifier onlyPayloadSize(uint size) {
@@ -15,7 +16,13 @@ contract SalonToken is IExtendedERC20, IUpgradeable, Administrative {
     }
 
     constructor(string name, string symbol, uint8 decimals) public {
-        tokenImpl = new SalonTokenImpl(name, symbol, decimals);
+        tokenStorage = new SalonTokenStorage();
+        tokenImpl = new SalonTokenImpl(address(tokenStorage));
+
+        tokenStorage.setName(name);
+        tokenStorage.setSymbol(symbol);
+        tokenStorage.setDecimals(decimals);
+        tokenStorage.transferAdministrator(address(tokenImpl));
     }
 
     function name() public view returns (string) {
@@ -73,6 +80,7 @@ contract SalonToken is IExtendedERC20, IUpgradeable, Administrative {
     function upgrade(address newImpl) external onlyPrivileged {
         address temp = tokenImpl;
         tokenImpl = SalonTokenImpl(newImpl);
+        tokenStorage.transferAdministrator(newImpl);
         emit Upgrade(newImpl, temp);
     }
 }
