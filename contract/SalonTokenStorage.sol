@@ -13,27 +13,27 @@ contract SalonTokenStorage is Administrative {
     mapping(address => mapping(address => uint256)) private _allowed;
 
     //getters
-    function getTotalSupply() public view returns (uint256) {
+    function getTotalSupply() public view onlyPrivileged returns (uint256) {
         return _totalSupply;
     }
 
-    function getName() public view returns (string) {
+    function getName() public view onlyPrivileged returns (string) {
         return _name;
     }
 
-    function getSymbol() public view returns (string) {
+    function getSymbol() public view onlyPrivileged returns (string) {
         return _symbol;
     }
 
-    function getDecimals() public view returns (uint8) {
+    function getDecimals() public view onlyPrivileged returns (uint8) {
         return _decimals;
     }
 
-    function getBalances(address who) public view returns (uint256) {
+    function getBalances(address who) public view onlyPrivileged returns (uint256) {
         return _balances[who];
     }
 
-    function getAllowed(address owner, address spender) public view returns (uint256) {
+    function getAllowed(address owner, address spender) public view onlyPrivileged returns (uint256) {
         return _allowed[owner][spender];
     }
 
