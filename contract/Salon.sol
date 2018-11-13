@@ -33,19 +33,19 @@ contract Salon is Administrative {
         _;
     }
 
-    event LogNewCampaign(uint indexed campaignID, uint startTime, uint stopTime, string topic, address indexed speaker, address indexed sponsor);
+    event LogNewCampaign(uint indexed campaignID, string topic, address indexed speaker, address indexed sponsor);
     event LogCheckedIn(address indexed who);
     event LogQuestion(address indexed questioner, address indexed replier);
     event LogClose(uint indexed campaignID, uint numOfParticipants, uint questions);
 
-    function newCampaign(uint _campaignID, uint _startTime, uint _stopTime, string _topic, address _speaker, address _sponsor)
+    function newCampaign(uint _campaignID, string _topic, address _speaker, address _sponsor)
     external onlyPrivileged {
         campaigns[_campaignID] = Campaign({
             ID : _campaignID, end : false, topic : _topic,
             speaker : _speaker, sponsor : _sponsor, participants : new address[](0), questioner : new address[](0)
             });
         salonToken.mint(address(this), 100 * unit);
-        emit LogNewCampaign(_campaignID, _startTime, _stopTime, _topic, _speaker, _sponsor);
+        emit LogNewCampaign(_campaignID, _topic, _speaker, _sponsor);
     }
 
     function checkInByAdmin(uint _campaignID, address _who) external onlyPrivileged validCampaign(_campaignID){
