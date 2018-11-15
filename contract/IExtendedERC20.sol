@@ -20,26 +20,4 @@ interface IExtendedERC20 {
     function mint(address account, uint256 value) external returns (bool);
 
     function burn(address account, uint256 value) external returns (bool);
-
-    event Transfer(
-        address indexed from,
-        address indexed to,
-        uint256 value
-    );
-
-    event Approval(
-        address indexed owner,
-        address indexed spender,
-        uint256 value
-    );
-
-    event Mint(
-        address indexed account,
-        uint256 value
-    );
-
-    event Burn(
-        address indexed account,
-        uint256 value
-    );
 }

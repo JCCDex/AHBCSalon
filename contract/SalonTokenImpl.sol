@@ -7,6 +7,28 @@ contract SalonTokenImpl is Administrative {
     using SafeMath for uint256;
     SalonTokenStorage tokenStorage;
 
+    event Transfer(
+        address indexed from,
+        address indexed to,
+        uint256 value
+    );
+
+    event Approval(
+        address indexed owner,
+        address indexed spender,
+        uint256 value
+    );
+
+    event Mint(
+        address indexed account,
+        uint256 value
+    );
+
+    event Burn(
+        address indexed account,
+        uint256 value
+    );
+
     constructor(address storageAddr) public {
         tokenStorage = SalonTokenStorage(storageAddr);
     }
