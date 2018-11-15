@@ -40,6 +40,10 @@ contract Salon is Administrative {
 
     function newCampaign(uint _campaignID, string _topic, address _speaker, address _sponsor)
     external onlyPrivileged {
+        require(_speaker != address(0));
+        require(_sponsor != address(0));
+        require(campaigns[_campaignID].speaker == address(0));
+
         campaigns[_campaignID] = Campaign({
             ID : _campaignID, end : false, topic : _topic,
             speaker : _speaker, sponsor : _sponsor, participants : new address[](0), questioner : new address[](0)
