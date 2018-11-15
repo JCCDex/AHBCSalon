@@ -50,23 +50,23 @@ contract SalonToken is IExtendedERC20, IUpgradeable, Administrative {
     }
 
     function transfer(address to, uint256 value) external onlyPayloadSize(2 * 32) returns (bool) {
-        return tokenImpl.transfer(to, value);
+        return tokenImpl.transfer(msg.sender, to, value);
     }
 
     function approve(address spender, uint256 value) external onlyPayloadSize(2 * 32) returns (bool) {
-        return tokenImpl.approve(spender, value);
+        return tokenImpl.approve(msg.sender, spender, value);
     }
 
     function transferFrom(address from, address to, uint256 value) external onlyPayloadSize(3 * 32) returns (bool) {
-        return tokenImpl.transferFrom(from, to, value);
+        return tokenImpl.transferFrom(from, msg.sender, to, value);
     }
 
     function increaseAllowance(address spender, uint256 addedValue) external onlyPayloadSize(2 * 32) returns (bool) {
-        return tokenImpl.increaseAllowance(spender, addedValue);
+        return tokenImpl.increaseAllowance(msg.sender, spender, addedValue);
     }
 
     function decreaseAllowance(address spender, uint256 subtractedValue) external onlyPayloadSize(2 * 32) returns (bool) {
-        return tokenImpl.decreaseAllowance(spender, subtractedValue);
+        return tokenImpl.decreaseAllowance(msg.sender, spender, subtractedValue);
     }
 
     function mint(address account, uint256 value) external onlyPrivileged returns (bool) {

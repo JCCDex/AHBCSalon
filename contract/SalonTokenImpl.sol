@@ -3,7 +3,7 @@ pragma solidity ^0.4.25;
 import "./SalonTokenStorage.sol";
 import "./LibSafeMath.sol";
 
-contract SalonTokenImpl is IExtendedERC20, Administrative {
+contract SalonTokenImpl is Administrative {
     using SafeMath for uint256;
     SalonTokenStorage tokenStorage;
 
@@ -35,38 +35,38 @@ contract SalonTokenImpl is IExtendedERC20, Administrative {
         return tokenStorage.getAllowed(owner, spender);
     }
 
-    function transfer(address to, uint256 value) external onlyPrivileged returns (bool) {
-        _transfer(msg.sender, to, value);
-        return true;
-    }
-
-    function approve(address spender, uint256 value) external onlyPrivileged returns (bool) {
-        require(spender != address(0));
-
-        tokenStorage.setAllowed(msg.sender, spender, value);
-        emit Approval(msg.sender, spender, value);
-        return true;
-    }
-
-    function transferFrom(address from, address to, uint256 value) external onlyPrivileged returns (bool) {
-        tokenStorage.setAllowed(from, msg.sender, tokenStorage.getAllowed(from, msg.sender).sub(value));
+    function transfer(address from, address to, uint256 value) external onlyPrivileged returns (bool) {
         _transfer(from, to, value);
         return true;
     }
 
-    function increaseAllowance(address spender, uint256 addedValue) external onlyPrivileged returns (bool) {
+    function approve(address approver, address spender, uint256 value) external onlyPrivileged returns (bool) {
         require(spender != address(0));
 
-        tokenStorage.setAllowed(msg.sender, spender, tokenStorage.getAllowed(msg.sender, spender).add(addedValue));
-        emit Approval(msg.sender, spender, tokenStorage.getAllowed(msg.sender, spender));
+        tokenStorage.setAllowed(approver, spender, value);
+        emit Approval(approver, spender, value);
         return true;
     }
 
-    function decreaseAllowance(address spender, uint256 subtractedValue) external onlyPrivileged returns (bool) {
+    function transferFrom(address from, address spender, address to, uint256 value) external onlyPrivileged returns (bool) {
+        tokenStorage.setAllowed(from, spender, tokenStorage.getAllowed(from, spender).sub(value));
+        _transfer(from, to, value);
+        return true;
+    }
+
+    function increaseAllowance(address approver, address spender, uint256 addedValue) external onlyPrivileged returns (bool) {
         require(spender != address(0));
 
-        tokenStorage.setAllowed(msg.sender, spender, tokenStorage.getAllowed(msg.sender, spender).sub(subtractedValue));
-        emit Approval(msg.sender, spender, tokenStorage.getAllowed(msg.sender, spender));
+        tokenStorage.setAllowed(approver, spender, tokenStorage.getAllowed(approver, spender).add(addedValue));
+        emit Approval(approver, spender, tokenStorage.getAllowed(approver, spender));
+        return true;
+    }
+
+    function decreaseAllowance(address approver, address spender, uint256 subtractedValue) external onlyPrivileged returns (bool) {
+        require(spender != address(0));
+
+        tokenStorage.setAllowed(approver, spender, tokenStorage.getAllowed(approver, spender).sub(subtractedValue));
+        emit Approval(approver, spender, tokenStorage.getAllowed(approver, spender));
         return true;
     }
 
