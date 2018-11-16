@@ -29,6 +29,7 @@ contract Salon is Administrative {
 
     modifier validCampaign(uint _campaignID) {
         Campaign storage c = campaigns[_campaignID];
+        require(c.speaker != address(0));
         require(!c.end);
         _;
     }
@@ -90,6 +91,8 @@ contract Salon is Administrative {
         emit LogClose(_campaignID, c.participants.length, c.questioner.length);
     }
 
+    //正式实施过程中建议去掉这个用户自己签到的接口。因为一旦有人知道这个接口，完全可以在家签到。
+    //可以使用上面的管理员代签来保证签到人员都到会场了。
     function checkIn(uint _campaignID) external validCampaign(_campaignID) {
         Campaign storage c = campaigns[_campaignID];
         c.participants.push(msg.sender);
