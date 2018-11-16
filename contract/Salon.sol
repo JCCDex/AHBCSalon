@@ -4,29 +4,35 @@ import "./IUpgradeable.sol";
 import "./Administrative.sol";
 import "./SalonToken.sol";
 
+//沙龙合约，支持开启新活动，用户签到，问题记录以及奖励分配等功能
 contract Salon is Administrative {
+
+    //合约结构体
     struct Campaign {
-        uint ID;
-        bool end;
-        string topic;
-        address speaker;
-        address sponsor;
-        address[] participants;
-        address[] questioner;
-        mapping(address => address) QRMap;
+        uint ID; //期号，建议用日期形式，例如20181116
+        bool end; //是否结束
+        string topic; //沙龙主题
+        address speaker; //主讲人地址
+        address sponsor; //赞助商（场地提供人）地址
+        address[] participants; //参与者数组
+        address[] questioner; //提问者数组
+        mapping(address => address) QRMap; //提问-回答键值对
     }
 
-    mapping(uint => Campaign) campaigns;
+    mapping(uint => Campaign) campaigns; //期号-沙龙实体键值对
 
-    SalonToken public salonToken;
-    uint unit;
+    SalonToken public salonToken; //沙龙token合约
+    uint unit; //沙龙token小数位数
 
+
+    //构造函数，传入沙龙token合约地址
     constructor(address salonTokenAddr) public {
         salonToken = SalonToken(salonTokenAddr);
         uint decimals = salonToken.decimals();
         unit = 10 ** decimals;
     }
 
+    //检测是否是合法沙龙，合法定义为：已经开始，但是没有结束的沙龙
     modifier validCampaign(uint _campaignID) {
         Campaign storage c = campaigns[_campaignID];
         require(c.speaker != address(0));
@@ -34,11 +40,13 @@ contract Salon is Administrative {
         _;
     }
 
+    //一些记录事件
     event LogNewCampaign(uint indexed campaignID, string topic, address indexed speaker, address indexed sponsor);
     event LogCheckedIn(address indexed who);
     event LogQuestion(address indexed questioner, address indexed replier);
     event LogClose(uint indexed campaignID, uint numOfParticipants, uint questions);
 
+    //开启一个新沙龙，需要管理员权限。根据既定规则，会产生100个新币，用于后期奖励。参数为：沙龙id，主题，主讲人，赞助商
     function newCampaign(uint _campaignID, string _topic, address _speaker, address _sponsor)
     external onlyPrivileged {
         require(_speaker != address(0));
@@ -53,12 +61,14 @@ contract Salon is Administrative {
         emit LogNewCampaign(_campaignID, _topic, _speaker, _sponsor);
     }
 
+    //代理签到，需要管理员权限。参数为：沙龙id，签到人地址
     function checkInByAdmin(uint _campaignID, address _who) external onlyPrivileged validCampaign(_campaignID){
         Campaign storage c = campaigns[_campaignID];
         c.participants.push(_who);
         emit LogCheckedIn(_who);
     }
 
+    //添加场上问题。需要管理员权限，参数为：沙龙id，提问者，回答者
     function addQuestion(uint _campaignID, address _questioner, address _replier) external onlyPrivileged validCampaign(_campaignID) {
         Campaign storage c = campaigns[_campaignID];
         c.questioner.push(_questioner);
@@ -66,6 +76,7 @@ contract Salon is Administrative {
         emit LogQuestion(_questioner, _replier);
     }
 
+    //关闭沙龙。需要管理员权限。关闭后会按照既定规则，把奖励发放给主讲人、参与者等。参数为：沙龙id
     function closeCampaign(uint _campaignID) external onlyPrivileged validCampaign(_campaignID) {
         Campaign storage c = campaigns[_campaignID];
         salonToken.transfer(c.speaker, 30 * unit);
@@ -91,7 +102,8 @@ contract Salon is Administrative {
         emit LogClose(_campaignID, c.participants.length, c.questioner.length);
     }
 
-    //正式实施过程中建议去掉这个用户自己签到的接口。因为一旦有人知道这个接口，完全可以在家签到。
+    //用户自己签到，无权限。参数：沙龙id
+    //注：正式实施过程中建议去掉这个用户自己签到的接口。因为一旦有人知道这个接口，完全可以在家签到。
     //可以使用上面的管理员代签来保证签到人员都到会场了。
     function checkIn(uint _campaignID) external validCampaign(_campaignID) {
         Campaign storage c = campaigns[_campaignID];
