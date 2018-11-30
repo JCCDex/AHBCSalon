@@ -23,6 +23,10 @@ contract Salon is Administrative {
 
     SalonToken public salonToken; //沙龙token合约
     uint unit; //沙龙token小数位数
+    uint public speakerPercent = 30;
+    uint public sponsorPercent = 10;
+    uint public participantPercent = 40;
+    uint public questionPercent = 20;
 
 
     //构造函数，传入沙龙token合约地址
@@ -61,8 +65,17 @@ contract Salon is Administrative {
         if(salonToken.totalSupply() + (100 * unit) <= (10000 * unit)) {
             salonToken.mint(address(this), 100 * unit);
         }
-        
+
         emit LogNewCampaign(_campaignID, _topic, _speaker, _sponsor);
+    }
+
+    //修改各个部分的分配比例，需要管理员权限，参数为：主讲人比例，赞助商比例，参与者比例，提问回答者比例
+    function changePercentage(uint _speakerP, uint _sponsorP, uint _participantP, uint _questionP) {
+        require(_questionP + _sponsorP + _participantP + _questionP <= 100, "比例总和要小于100");
+        sponsorPercent = _speakerP;
+        sponsorPercent = _sponsorP;
+        participantPercent = _participantP;
+        questionPercent = _questionP;
     }
 
     //代理签到，需要管理员权限。参数为：沙龙id，签到人地址
@@ -85,19 +98,19 @@ contract Salon is Administrative {
         uint totalAmount = salonToken.balanceOf(address(this));
 
         Campaign storage c = campaigns[_campaignID];
-        salonToken.transfer(c.speaker, 30 * totalAmount / 100);
-        salonToken.transfer(c.sponsor, 10 * totalAmount / 100);
+        salonToken.transfer(c.speaker, speakerPercent * totalAmount / 100);
+        salonToken.transfer(c.sponsor, sponsorPercent * totalAmount / 100);
 
         uint i;
         if(c.participants.length > 0) {
-            uint tokenForAttendance = 40 * totalAmount / 100 / c.participants.length;
+            uint tokenForAttendance = participantPercent * totalAmount / 100 / c.participants.length;
             for(i=0;i<c.participants.length;i++) {
                 salonToken.transfer(c.participants[i], tokenForAttendance);
             }
         }
 
         if(c.questioner.length > 0) {
-            uint tokenForQuestion = 20 * totalAmount / 100 / c.questioner.length / 2;
+            uint tokenForQuestion = questionPercent * totalAmount / 100 / c.questioner.length / 2;
             for(i=0;i<c.questioner.length;i++) {
                 salonToken.transfer(c.questioner[i], tokenForQuestion);
                 salonToken.transfer(c.QRMap[c.questioner[i]], tokenForQuestion);
