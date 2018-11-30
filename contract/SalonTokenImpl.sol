@@ -6,6 +6,7 @@ import "./LibSafeMath.sol";
 contract SalonTokenImpl is Administrative {
     using SafeMath for uint256;
     SalonTokenStorage tokenStorage;
+    uint unit;
 
     event Transfer(
         address indexed from,
@@ -29,8 +30,9 @@ contract SalonTokenImpl is Administrative {
         uint256 value
     );
 
-    constructor(address storageAddr) public {
+    constructor(address storageAddr, uint decimals) public {
         tokenStorage = SalonTokenStorage(storageAddr);
+        unit = 10 ** decimals;
     }
 
     function name() public view onlyPrivileged returns (string) {
@@ -94,6 +96,7 @@ contract SalonTokenImpl is Administrative {
 
     function mint(address account, uint256 value) external onlyPrivileged returns (bool) {
         require(account != address(0));
+        require((tokenStorage.getTotalSupply() + value) <= (10000 * unit));
 
         tokenStorage.setTotalSupply(tokenStorage.getTotalSupply().add(value));
         tokenStorage.setBalances(account, tokenStorage.getBalances(account).add(value));

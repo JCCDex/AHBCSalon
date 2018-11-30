@@ -17,7 +17,7 @@ contract SalonToken is IExtendedERC20, IUpgradeable, Administrative {
 
     constructor(string name, string symbol, uint8 decimals) public {
         tokenStorage = new SalonTokenStorage();
-        tokenImpl = new SalonTokenImpl(address(tokenStorage));
+        tokenImpl = new SalonTokenImpl(address(tokenStorage), decimals);
 
         tokenStorage.setName(name);
         tokenStorage.setSymbol(symbol);
