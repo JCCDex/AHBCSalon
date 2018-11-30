@@ -70,7 +70,8 @@ contract Salon is Administrative {
     }
 
     //修改各个部分的分配比例，需要管理员权限，参数为：主讲人比例，赞助商比例，参与者比例，提问回答者比例
-    function changePercentage(uint _speakerP, uint _sponsorP, uint _participantP, uint _questionP) {
+    function changePercentage(uint _speakerP, uint _sponsorP, uint _participantP, uint _questionP)
+    external onlyPrivileged{
         require(_questionP + _sponsorP + _participantP + _questionP <= 100, "比例总和要小于100");
         sponsorPercent = _speakerP;
         sponsorPercent = _sponsorP;
