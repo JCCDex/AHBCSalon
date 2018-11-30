@@ -57,7 +57,11 @@ contract Salon is Administrative {
             ID : _campaignID, end : false, topic : _topic,
             speaker : _speaker, sponsor : _sponsor, participants : new address[](0), questioner : new address[](0)
             });
-        salonToken.mint(address(this), 100 * unit);
+
+        if(salonToken.totalSupply() + (100 * unit) <= (10000 * unit)) {
+            salonToken.mint(address(this), 100 * unit);
+        }
+        
         emit LogNewCampaign(_campaignID, _topic, _speaker, _sponsor);
     }
 
@@ -78,20 +82,22 @@ contract Salon is Administrative {
 
     //关闭沙龙。需要管理员权限。关闭后会按照既定规则，把奖励发放给主讲人、参与者等。参数为：沙龙id
     function closeCampaign(uint _campaignID) external onlyPrivileged validCampaign(_campaignID) {
+        uint totalAmount = salonToken.balanceOf(address(this));
+
         Campaign storage c = campaigns[_campaignID];
-        salonToken.transfer(c.speaker, 30 * unit);
-        salonToken.transfer(c.sponsor, 10 * unit);
+        salonToken.transfer(c.speaker, 30 * totalAmount / 100);
+        salonToken.transfer(c.sponsor, 10 * totalAmount / 100);
 
         uint i;
         if(c.participants.length > 0) {
-            uint tokenForAttendance = 40 * unit / c.participants.length;
+            uint tokenForAttendance = 40 * totalAmount / 100 / c.participants.length;
             for(i=0;i<c.participants.length;i++) {
                 salonToken.transfer(c.participants[i], tokenForAttendance);
             }
         }
 
         if(c.questioner.length > 0) {
-            uint tokenForQuestion = 20 * unit / c.questioner.length / 2;
+            uint tokenForQuestion = 20 * totalAmount / 100 / c.questioner.length / 2;
             for(i=0;i<c.questioner.length;i++) {
                 salonToken.transfer(c.questioner[i], tokenForQuestion);
                 salonToken.transfer(c.QRMap[c.questioner[i]], tokenForQuestion);
