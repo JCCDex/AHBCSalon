@@ -73,7 +73,7 @@ contract Salon is Administrative {
     function changePercentage(uint _speakerP, uint _sponsorP, uint _participantP, uint _questionP)
     external onlyPrivileged{
         require(_speakerP + _sponsorP + _participantP + _questionP == 100, "比例总和要等于100");
-        sponsorPercent = _speakerP;
+        speakerPercent = _speakerP;
         sponsorPercent = _sponsorP;
         participantPercent = _participantP;
         questionPercent = _questionP;
