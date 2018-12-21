@@ -1,23 +1,46 @@
-pragma solidity >=0.4.21 <0.6.0;
+pragma solidity >=0.4.24 <0.6.0;
 
-contract Migrations {
-  address public owner;
-  uint public last_completed_migration;
+import "@0xcert/ethereum-utils/contracts/ownership/Ownable.sol";
 
-  constructor() public {
+contract Migrations is
+  Ownable
+{
+  uint public lastCompletedMigration;
+
+  /**
+   * @dev Contract constructor.
+   */
+  constructor()
+    public
+  {
     owner = msg.sender;
   }
 
-  modifier restricted() {
-    if (msg.sender == owner) _;
+  /**
+   * @dev Sets migration state.
+   * @param _completed Last completed migration number.
+   */
+  function setCompleted(
+    uint _completed
+  )
+    public
+    onlyOwner()
+  {
+    lastCompletedMigration = _completed;
   }
 
-  function setCompleted(uint completed) public restricted {
-    last_completed_migration = completed;
+  /**
+   * @dev Permorms migration.
+   * @param _addr New migration address.
+   */
+  function upgrade(
+    address _addr
+  )
+    public
+    onlyOwner()
+  {
+    Migrations upgraded = Migrations(_addr);
+    upgraded.setCompleted(lastCompletedMigration);
   }
 
-  function upgrade(address new_address) public restricted {
-    Migrations upgraded = Migrations(new_address);
-    upgraded.setCompleted(last_completed_migration);
-  }
 }
