@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 
 import "./SalonTokenStorage.sol";
-import "./LibSafeMath.sol";
+import "../0xcert/math/SafeMath.sol";
 
 contract SalonTokenImpl is Administrative {
     using SafeMath for uint256;

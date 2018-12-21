@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 
 import "./IExtendedERC20.sol";
-import "./LibSafeMath.sol";
+import "../0xcert/math/SafeMath.sol";
 
 contract TokenBase is IExtendedERC20 {
     using SafeMath for uint256;
