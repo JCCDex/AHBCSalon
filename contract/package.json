@@ -42,9 +42,10 @@
     "tokens"
   ],
   "devDependencies": {
-    "eslint": "^4.19.1",
+    "eslint": "^5.10.0",
     "ethjs-util": "^0.1.6",
-    "truffle-flattener": "^1.2.5"
+    "truffle": "^5.0.0",
+    "truffle-flattener": "^1.2.10"
   },
   "dependencies": {
     "@0xcert/ethereum-utils": "^1.1.0"

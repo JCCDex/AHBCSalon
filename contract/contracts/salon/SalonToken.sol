@@ -1,4 +1,4 @@
-pragma solidity ^0.4.25;
+pragma solidity ^0.5.0;
 
 import "./Administrative.sol";
 import "./IExtendedERC20.sol";
@@ -15,7 +15,7 @@ contract SalonToken is IExtendedERC20, IUpgradeable, Administrative {
         _;
     }
 
-    constructor(string name, string symbol, uint8 decimals) public {
+    constructor(string memory name, string memory symbol, uint8 decimals) public {
         tokenStorage = new SalonTokenStorage();
         tokenImpl = new SalonTokenImpl(address(tokenStorage), decimals);
 
@@ -25,11 +25,11 @@ contract SalonToken is IExtendedERC20, IUpgradeable, Administrative {
         tokenStorage.transferAdministrator(address(tokenImpl));
     }
 
-    function name() public view returns (string) {
+    function name() public view returns (string memory) {
         return tokenImpl.name();
     }
 
-    function symbol() public view returns (string) {
+    function symbol() public view returns (string memory) {
         return tokenImpl.symbol();
     }
 
@@ -78,7 +78,7 @@ contract SalonToken is IExtendedERC20, IUpgradeable, Administrative {
     }
 
     function upgrade(address newImpl) external onlyPrivileged {
-        address temp = tokenImpl;
+        address temp = address(tokenImpl);
         tokenImpl = SalonTokenImpl(newImpl);
         tokenStorage.transferAdministrator(newImpl);
         emit Upgrade(newImpl, temp);

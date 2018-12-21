@@ -1,4 +1,4 @@
-pragma solidity ^0.4.25;
+pragma solidity ^0.5.0;
 
 import "./IExtendedERC20.sol";
 import "./LibSafeMath.sol";
@@ -14,12 +14,24 @@ contract TokenBase is IExtendedERC20 {
     string private _symbol;
     uint8 private _decimals;
 
+    event Transfer(
+        address indexed from,
+        address indexed to,
+        uint256 value
+    );
+
+    event Approval(
+        address indexed owner,
+        address indexed spender,
+        uint256 value
+    );
+
     modifier onlyPayloadSize(uint size) {
         require(msg.data.length >= size + 4);
         _;
     }
 
-    constructor(string name, string symbol, uint8 decimals) public {
+    constructor(string memory name, string memory symbol, uint8 decimals) public {
         _name = name;
         _symbol = symbol;
         _decimals = decimals;
@@ -29,11 +41,11 @@ contract TokenBase is IExtendedERC20 {
         return _totalSupply;
     }
 
-    function name() public view returns (string) {
+    function name() public view returns (string memory) {
         return _name;
     }
 
-    function symbol() public view returns (string) {
+    function symbol() public view returns (string memory) {
         return _symbol;
     }
 

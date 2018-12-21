@@ -1,6 +1,6 @@
 pragma solidity >=0.4.24 <0.6.0;
 
-import "@0xcert/ethereum-utils/contracts/ownership/Ownable.sol";
+import "./0xcert/ownership/Ownable.sol";
 
 contract Migrations is
   Ownable

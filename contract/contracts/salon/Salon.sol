@@ -1,4 +1,4 @@
-pragma solidity ^0.4.25;
+pragma solidity ^0.5.0;
 
 import "./IUpgradeable.sol";
 import "./Administrative.sol";
@@ -51,7 +51,7 @@ contract Salon is Administrative {
     event LogClose(uint indexed campaignID, uint numOfParticipants, uint questions);
 
     //开启一个新沙龙，需要管理员权限。根据既定规则，会产生100个新币，用于后期奖励。参数为：沙龙id，主题，主讲人，赞助商
-    function newCampaign(uint _campaignID, string _topic, address _speaker, address _sponsor)
+    function newCampaign(uint _campaignID, string calldata _topic, address _speaker, address _sponsor)
     external onlyPrivileged {
         require(_speaker != address(0));
         require(_sponsor != address(0));

@@ -1,4 +1,4 @@
-pragma solidity ^0.4.25;
+pragma solidity ^0.5.0;
 
 import "./Administrative.sol";
 import "./IExtendedERC20.sol";
@@ -17,11 +17,11 @@ contract SalonTokenStorage is Administrative {
         return _totalSupply;
     }
 
-    function getName() public view onlyPrivileged returns (string) {
+    function getName() public view onlyPrivileged returns (string memory) {
         return _name;
     }
 
-    function getSymbol() public view onlyPrivileged returns (string) {
+    function getSymbol() public view onlyPrivileged returns (string memory) {
         return _symbol;
     }
 
@@ -43,11 +43,11 @@ contract SalonTokenStorage is Administrative {
         _totalSupply = value;
     }
 
-    function setName(string value) public onlyPrivileged {
+    function setName(string memory value) public onlyPrivileged {
         _name = value;
     }
 
-    function setSymbol(string value) public onlyPrivileged {
+    function setSymbol(string memory value) public onlyPrivileged {
         _symbol = value;
     }
 

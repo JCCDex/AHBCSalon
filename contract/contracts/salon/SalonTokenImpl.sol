@@ -1,4 +1,4 @@
-pragma solidity ^0.4.25;
+pragma solidity ^0.5.0;
 
 import "./SalonTokenStorage.sol";
 import "./LibSafeMath.sol";
@@ -35,11 +35,11 @@ contract SalonTokenImpl is Administrative {
         unit = 10 ** decimals;
     }
 
-    function name() public view onlyPrivileged returns (string) {
+    function name() public view onlyPrivileged returns (string memory) {
         return tokenStorage.getName();
     }
 
-    function symbol() public view onlyPrivileged returns (string) {
+    function symbol() public view onlyPrivileged returns (string memory) {
         return tokenStorage.getSymbol();
     }
 
