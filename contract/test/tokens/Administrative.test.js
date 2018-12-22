@@ -2,7 +2,7 @@ const Administrative = artifacts.require('Administrative');
 const assertRevert = require('../helpers/assertRevert');
 const zeroAccount = require('../helpers/zeroAccount');
 
-contract('AdministrativeMock', (accounts) => {
+contract('Administrative', (accounts) => {
   let admin;
 
   beforeEach(async () => {

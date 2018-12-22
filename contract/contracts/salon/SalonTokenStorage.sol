@@ -1,8 +1,9 @@
 pragma solidity ^0.5.0;
 
 import "./Administrative.sol";
-import "./IExtendedERC20.sol";
+// import "./IExtendedERC20.sol";
 
+// 独立的存储合约
 contract SalonTokenStorage is Administrative {
     uint256 private _totalSupply;
     string private _name;
