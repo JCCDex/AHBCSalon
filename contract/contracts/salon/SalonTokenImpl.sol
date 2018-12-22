@@ -2,23 +2,17 @@ pragma solidity ^0.5.0;
 
 import "./SalonTokenStorage.sol";
 import "../0xcert/math/SafeMath.sol";
+import "./IExtendedERC20.sol";
 
 contract SalonTokenImpl is Administrative {
     using SafeMath for uint256;
     SalonTokenStorage tokenStorage;
     uint unit;
 
-    event Transfer(
-        address indexed from,
-        address indexed to,
-        uint256 value
-    );
+    //TODO:是否重复定义了
+    event Transfer(address indexed from, address indexed to, uint256 value);
 
-    event Approval(
-        address indexed owner,
-        address indexed spender,
-        uint256 value
-    );
+    event Approval(address indexed owner, address indexed spender, uint256 value);
 
     event Mint(
         address indexed account,
@@ -96,6 +90,7 @@ contract SalonTokenImpl is Administrative {
 
     function mint(address account, uint256 value) external onlyPrivileged returns (bool) {
         require(account != address(0));
+        //TODO:impl 作恶超发？ 应该放到storage里面判断
         require((tokenStorage.getTotalSupply() + value) <= (10000 * unit));
 
         tokenStorage.setTotalSupply(tokenStorage.getTotalSupply().add(value));
