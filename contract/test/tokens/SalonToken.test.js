@@ -6,7 +6,7 @@ contract('SalonToken', (accounts) => {
   let token;
 
   beforeEach(async () => {
-    token = await SalonToken.new('AnHui Blockchain Salon Token', 'AHBS', 18, {gas: 4712388});
+    // token = await SalonToken.new('AnHui Blockchain Salon Token', 'AHBS', 18, {gas: 4712388});
   });
 
   it('get name test', async () => {
