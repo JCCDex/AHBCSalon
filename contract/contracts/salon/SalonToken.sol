@@ -15,14 +15,15 @@ contract SalonToken is IExtendedERC20, IUpgradeable, Administrative {
         _;
     }
 
-    constructor(string memory name, string memory symbol, uint8 decimals) public {
-        tokenStorage = new SalonTokenStorage();
-        tokenImpl = new SalonTokenImpl(address(tokenStorage), decimals);
-
-        tokenStorage.setName(name);
-        tokenStorage.setSymbol(symbol);
-        tokenStorage.setDecimals(decimals);
-        tokenStorage.transferAdministrator(address(tokenImpl));
+    constructor(address impl, address store) public {
+        tokenStorage = SalonTokenStorage(store);
+        tokenImpl = SalonTokenImpl(impl);
+        
+        // contract configuration be set outside
+        // tokenStorage.setName(name);
+        // tokenStorage.setSymbol(symbol);
+        // tokenStorage.setDecimals(decimals);
+        // tokenStorage.transferAdministrator(address(tokenImpl));
     }
 
     function name() public view returns (string memory) {
@@ -80,7 +81,7 @@ contract SalonToken is IExtendedERC20, IUpgradeable, Administrative {
     function upgrade(address newImpl) external onlyPrivileged {
         address temp = address(tokenImpl);
         tokenImpl = SalonTokenImpl(newImpl);
-        tokenStorage.transferAdministrator(newImpl);
+        // tokenStorage.transferAdministrator(newImpl);
         emit Upgrade(newImpl, temp);
     }
 }
