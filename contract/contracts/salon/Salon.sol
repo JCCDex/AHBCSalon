@@ -23,6 +23,8 @@ contract Salon is Administrative {
 
     SalonToken public salonToken; //沙龙token合约
     uint unit; //沙龙token小数位数
+
+    //一次沙龙活动挖矿的比例
     uint public speakerPercent = 30;
     uint public sponsorPercent = 10;
     uint public participantPercent = 40;
@@ -55,7 +57,7 @@ contract Salon is Administrative {
     external onlyPrivileged {
         require(_speaker != address(0));
         require(_sponsor != address(0));
-        require(campaigns[_campaignID].speaker == address(0));
+        require(campaigns[_campaignID].speaker == address(0)); //禁止重复的沙龙活动
 
         campaigns[_campaignID] = Campaign({
             ID : _campaignID, end : false, topic : _topic,
@@ -82,6 +84,7 @@ contract Salon is Administrative {
     //代理签到，需要管理员权限。参数为：沙龙id，签到人地址
     function checkInByAdmin(uint _campaignID, address _who) external onlyPrivileged validCampaign(_campaignID){
         Campaign storage c = campaigns[_campaignID];
+        // TODO:是否要检查这个重复签到？
         c.participants.push(_who);
         emit LogCheckedIn(_who);
     }
