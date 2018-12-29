@@ -19,7 +19,7 @@ contract Salon is Administrative {
         mapping(address => address) QRMap; //提问-回答键值对
     }
 
-    mapping(uint => Campaign) campaigns; //期号-沙龙实体键值对
+    mapping(uint => Campaign) public campaigns; //期号-沙龙实体键值对
 
     SalonToken public salonToken; //沙龙token合约
     uint unit; //沙龙token小数位数

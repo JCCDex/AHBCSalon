@@ -22,7 +22,7 @@ contract('SalonTokenImpl', (accounts) => {
 
   });
 
-  it('get name/symbol/totalSupply test', async () => {
+  it('Get name/symbol/totalSupply test', async () => {
     let name = await tokenImpl.name.call();
     assert.equal(name, 'AnHui Blockchain Salon Token');
 
@@ -36,7 +36,7 @@ contract('SalonTokenImpl', (accounts) => {
     assert.equal(decimals.toString(), '18');
   });
 
-  it('transfer/balanceOf test', async () => {
+  it('Test transfer/balanceOf', async () => {
     let src = accounts[0];
     let dst = accounts[1];
     let {mint_ret} = await tokenImpl.mint(src, web3.utils.toWei('10').toString());
@@ -52,7 +52,7 @@ contract('SalonTokenImpl', (accounts) => {
     assert.equal(web3.utils.fromWei(dstBalance).toString(), '3.3');
   });
 
-  it('transferFrom/approval/allowance test', async () => {
+  it('Test transferFrom/approval/allowance', async () => {
     let src = accounts[0];
     let dst = accounts[1];
     let spender = accounts[2];

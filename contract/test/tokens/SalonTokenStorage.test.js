@@ -8,7 +8,7 @@ contract('SalonTokenStorage', (accounts) => {
     storage = await SalonTokenStorage.new();
   });
 
-  it('set and get name test', async () => {
+  it('Set and get name test', async () => {
     let name = await storage.getName();
     assert.equal(name, '');
 

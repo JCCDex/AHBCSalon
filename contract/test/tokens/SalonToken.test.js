@@ -11,21 +11,10 @@ contract('SalonToken', (accounts) => {
   let storage;
 
   beforeEach(async () => {
-    storage = await SalonTokenStorage.new();
-    await storage.setName("AnHui Blockchain Salon Token");
-    await storage.setSymbol("AHBC");
-    await storage.setDecimals(18);
-
-    await storage.setTotalSupply(web3.utils.toWei('0'));
-    
-    let tokenImpl = await SalonTokenImpl.new(storage.address, 18);
-    await storage.transferAdministrator(tokenImpl.address);
-
-    token = await SalonToken.new(tokenImpl.address, storage.address);
-    await tokenImpl.transferAdministrator(token.address);
+    token = await SalonToken.new("AnHui Blockchain Salon Token", "AHBC", 18);
   });
 
-  it('get name/symbol/totalSupply test', async () => {
+  it('Get name/symbol/totalSupply test', async () => {
     let name = await token.name.call();
     assert.equal(name, 'AnHui Blockchain Salon Token');
 
@@ -39,7 +28,7 @@ contract('SalonToken', (accounts) => {
     assert.equal(decimals.toString(), '18');
   });
 
-  it('transfer/balanceOf test', async () => {
+  it('Test transfer/balanceOf', async () => {
     let src = accounts[0];
     let dst = accounts[1];
     let {mint_ret} = await token.mint(src, web3.utils.toWei('10').toString());
@@ -54,7 +43,7 @@ contract('SalonToken', (accounts) => {
     assert.equal(web3.utils.fromWei(dstBalance).toString(), '3.3');
   });
 
-  it('transferFrom/approval/allowance test', async () => {
+  it('Test transferFrom/approval/allowance', async () => {
     let src = accounts[0];
     let dst = accounts[1];
     let spender = accounts[2];
@@ -95,22 +84,20 @@ contract('SalonToken', (accounts) => {
     // console.log((await token.tokenStorage.call()), (await token.tokenImpl.call()));
   });
 
-  it('upgrade test', async () => {
+  it('Upgrade test', async () => {
     let storageAddress = await token.tokenStorage.call();
     let tokenImpl = await SalonTokenImpl.new(storageAddress, 18);
-    await storage.transferAdministrator(token.address);
 
     await tokenImpl.transferAdministrator(token.address);
     let upgrade_logs = await token.upgrade(tokenImpl.address);
     const upgradeEvent = upgrade_logs.logs.find(e => e.event === 'Upgrade');
     assert.notEqual(upgradeEvent, undefined);
 
-    await storage.transferAdministrator(tokenImpl.address);
     let name = await token.name.call();
     assert.equal(name, 'AnHui Blockchain Salon Token');
   });
 
-  it('upgrade with new storage test', async () => {
+  it('Upgrade with new storage test', async () => {
     let newStorage = await SalonTokenStorage.new();
     await newStorage.setName("JiangShu Blockchain Salon Token");
     await newStorage.setSymbol("JSBC");
@@ -118,7 +105,6 @@ contract('SalonToken', (accounts) => {
     await newStorage.setTotalSupply(web3.utils.toWei('0'));
 
     let tokenImpl = await SalonTokenImpl.new(newStorage.address, 18);
-    await newStorage.transferAdministrator(token.address);
 
     await tokenImpl.transferAdministrator(token.address);
     let upgrade_logs = await token.upgrade(tokenImpl.address);
