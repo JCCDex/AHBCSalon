@@ -30,7 +30,7 @@ contract Salon is Administrative {
     uint public sponsorPercent = 10;
     uint public participantPercent = 40;
     uint public questionPercent = 20;
-
+    uint public registerFee = 1;
 
     //构造函数，传入沙龙token合约地址
     constructor(address salonTokenAddr) public {
@@ -49,6 +49,7 @@ contract Salon is Administrative {
 
     //一些记录事件
     event LogNewCampaign(uint indexed campaignID, string topic, address indexed speaker, address indexed sponsor);
+    event LogRegister(address indexed who);
     event LogCheckedIn(address indexed who);
     event LogQuestion(address indexed questioner, address indexed replier);
     event LogClose(uint indexed campaignID, uint numOfParticipants, uint questions);
@@ -87,13 +88,19 @@ contract Salon is Administrative {
         questionPercent = _questionP;
     }
 
+    function changeRegisterFee(uint _fee)
+    external onlyPrivileged{
+        require(_fee < 100, "报名费要低于挖矿数量");
+        registerFee = _fee;
+    }
+
     // 阻止多次签到
     function addParticipant(uint _campaignID, address _who, uint state, bool update) internal returns (bool) {
         Campaign storage c = campaigns[_campaignID];
         bool exist = c.idx_participants[_who] > 0 ? true : false;
 
         // 如果要求更新但是有没有这个用户，或者要求添加但是该用户已经存在，则不处理返回false
-        if ((update && !exist) || (!update && exist)) {
+        if ((update && !exist) || (!update && exist) || (update && c.idx_participants[_who] == state) ) {
             return false;
         }
         if (!update) {
@@ -106,7 +113,7 @@ contract Salon is Administrative {
 
     //代理签到，需要管理员权限。参数为：沙龙id，签到人地址
     function checkInByAdmin(uint _campaignID, address _who) external onlyPrivileged validCampaign(_campaignID){
-        if (addParticipant(_campaignID, _who, 2, false)) {
+        if (addParticipant(_campaignID, _who, 2, true)) {
             emit LogCheckedIn(_who);
         }
     }
@@ -150,9 +157,11 @@ contract Salon is Administrative {
     //用户自己签到，无权限。参数：沙龙id
     //注：正式实施过程中建议去掉这个用户自己签到的接口。因为一旦有人知道这个接口，完全可以在家签到。
     //可以使用上面的管理员代签来保证签到人员都到会场了。
-    function checkIn(uint _campaignID) external validCampaign(_campaignID) {
-        if (addParticipant(_campaignID, msg.sender, 2, false)) {
-            emit LogCheckedIn(msg.sender);
+    function register(uint _campaignID) external validCampaign(_campaignID) {
+        if (addParticipant(_campaignID, msg.sender, 1, false)) {
+            //转账
+            salonToken.transferFrom(msg.sender, address(this), registerFee * unit);
+            emit LogRegister(msg.sender);
         }
     }
 }
