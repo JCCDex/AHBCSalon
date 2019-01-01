@@ -261,4 +261,6 @@ contract('Salon', (accounts) => {
     assert.equal(web3.utils.fromWei((await token.balanceOf(sponsor))).toString(), '10.4');
     assert.equal(web3.utils.fromWei((await token.balanceOf(participant))).toString(), '19.4', "重复签到不会重复计入挖矿，应该是19.4");
   });
+
+  //TODO:提问人一定是参会报名的人员，以及主持人，赞助商
 });
