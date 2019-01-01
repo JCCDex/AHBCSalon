@@ -15,6 +15,7 @@ contract Salon is Administrative {
         address speaker; //主讲人地址
         address sponsor; //赞助商（场地提供人）地址
         address[] participants; //参与者数组
+        mapping(address => uint) idx_participants;
         address[] questioner; //提问者数组
         mapping(address => address) QRMap; //提问-回答键值对
     }
@@ -60,9 +61,14 @@ contract Salon is Administrative {
         require(campaigns[_campaignID].speaker == address(0)); //禁止重复的沙龙活动
 
         campaigns[_campaignID] = Campaign({
-            ID : _campaignID, end : false, topic : _topic,
-            speaker : _speaker, sponsor : _sponsor, participants : new address[](0), questioner : new address[](0)
-            });
+            ID : _campaignID, 
+            end : false, 
+            topic : _topic,
+            speaker : _speaker, 
+            sponsor : _sponsor, 
+            participants : new address[](0), 
+            questioner : new address[](0)
+        });
 
         if(salonToken.totalSupply() + (100 * unit) <= (10000 * unit)) {
             salonToken.mint(address(this), 100 * unit);
@@ -81,12 +87,28 @@ contract Salon is Administrative {
         questionPercent = _questionP;
     }
 
+    // 阻止多次签到
+    function addParticipant(uint _campaignID, address _who, uint state, bool update) internal returns (bool) {
+        Campaign storage c = campaigns[_campaignID];
+        bool exist = c.idx_participants[_who] > 0 ? true : false;
+
+        // 如果要求更新但是有没有这个用户，或者要求添加但是该用户已经存在，则不处理返回false
+        if ((update && !exist) || (!update && exist)) {
+            return false;
+        }
+        if (!update) {
+            c.participants.push(_who);
+        }
+        c.idx_participants[_who] = state;
+
+        return true;
+    }
+
     //代理签到，需要管理员权限。参数为：沙龙id，签到人地址
     function checkInByAdmin(uint _campaignID, address _who) external onlyPrivileged validCampaign(_campaignID){
-        Campaign storage c = campaigns[_campaignID];
-        // TODO:是否要检查这个重复签到？
-        c.participants.push(_who);
-        emit LogCheckedIn(_who);
+        if (addParticipant(_campaignID, _who, 2, false)) {
+            emit LogCheckedIn(_who);
+        }
     }
 
     //添加场上问题。需要管理员权限，参数为：沙龙id，提问者，回答者
@@ -129,8 +151,8 @@ contract Salon is Administrative {
     //注：正式实施过程中建议去掉这个用户自己签到的接口。因为一旦有人知道这个接口，完全可以在家签到。
     //可以使用上面的管理员代签来保证签到人员都到会场了。
     function checkIn(uint _campaignID) external validCampaign(_campaignID) {
-        Campaign storage c = campaigns[_campaignID];
-        c.participants.push(msg.sender);
-        emit LogCheckedIn(msg.sender);
+        if (addParticipant(_campaignID, msg.sender, 2, false)) {
+            emit LogCheckedIn(msg.sender);
+        }
     }
 }

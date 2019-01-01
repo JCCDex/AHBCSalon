@@ -55,13 +55,10 @@ contract('Salon', (accounts) => {
     let CheckinEvent = checkin_logs.logs.find(e => e.event === 'LogCheckedIn');
     assert.notEqual(CheckinEvent, undefined);
 
-    //重复签到?
+    //重复签到，没有消息
     checkin_logs = await salon.checkInByAdmin(20180901, participant);
-    CheckinEvent = checkin_logs.logs.find(e => e.event === 'LogCheckedIn');
-    assert.notEqual(CheckinEvent, undefined);
+    assert.equal(checkin_logs.logs.length, 0);
 
-    let campaign = await salon.campaigns.call(20180901);
-    // console.log(JSON.stringify(campaign));
   });
 
   it('Add question test', async () => {
