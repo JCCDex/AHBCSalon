@@ -10,12 +10,17 @@ contract Administrative {
     }
 
     modifier onlyOwner() {
-        require(msg.sender == owner);
+        require(msg.sender == owner, "only owner can modify this");
+        _;
+    }
+
+    modifier onlyAdministrator {
+        require(msg.sender == administrator, "only administrator can modify this");
         _;
     }
 
     modifier onlyPrivileged() {
-        require((msg.sender == owner) || (msg.sender == administrator));
+        require((msg.sender == owner) || (msg.sender == administrator), "only owner or administrator can modify this");
         _;
     }
 

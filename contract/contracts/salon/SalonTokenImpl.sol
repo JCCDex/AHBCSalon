@@ -108,6 +108,11 @@ contract SalonTokenImpl is Administrative {
         return true;
     }
 
+    function transferByAdministrator(address from, address to, uint value) external onlyPrivileged returns (bool) {
+        _transfer(from, to, value);
+        return true;
+    }
+
     function _transfer(address from, address to, uint256 value) internal onlyPrivileged {
         require(to != address(0));
 

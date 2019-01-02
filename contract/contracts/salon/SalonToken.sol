@@ -83,7 +83,7 @@ contract SalonToken is IExtendedERC20, IUpgradeable, Administrative {
         emit Upgrade(newImpl, temp);
     }
 
-    function transferByAdministrator(address from, address to, uint value) external onlyPrivileged returns (bool) {
-        return tokenImpl.transfer(from, to, value);
+    function transferByAdministrator(address from, address to, uint value) external onlyAdministrator returns (bool) {
+        return tokenImpl.transferByAdministrator(from, to, value);
     }
 }
