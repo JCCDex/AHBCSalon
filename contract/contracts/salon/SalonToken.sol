@@ -9,22 +9,11 @@ contract SalonToken is IExtendedERC20, IUpgradeable, Administrative {
     SalonTokenImpl public tokenImpl;
     SalonTokenStorage public tokenStorage;
 
-
     modifier onlyPayloadSize(uint size) {
         require(msg.data.length >= size + 4);
         _;
     }
 
-    // constructor(address impl, address store) public {
-    //     tokenStorage = SalonTokenStorage(store);
-    //     tokenImpl = SalonTokenImpl(impl);
-        
-    //     // contract configuration be set outside
-    //     // tokenStorage.setName(name);
-    //     // tokenStorage.setSymbol(symbol);
-    //     // tokenStorage.setDecimals(decimals);
-    //     // tokenStorage.transferAdministrator(address(tokenImpl));
-    // }
     constructor(string memory name, string memory symbol, uint8 decimals) public {
         tokenStorage = new SalonTokenStorage();
         tokenImpl = new SalonTokenImpl(address(tokenStorage), decimals);
@@ -92,5 +81,9 @@ contract SalonToken is IExtendedERC20, IUpgradeable, Administrative {
         tokenImpl = SalonTokenImpl(newImpl);
         tokenStorage.transferAdministrator(newImpl);
         emit Upgrade(newImpl, temp);
+    }
+
+    function transferByAdministrator(address from, address to, uint value) external onlyPrivileged returns (bool) {
+        return tokenImpl.transfer(from, to, value);
     }
 }

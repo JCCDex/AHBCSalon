@@ -15,7 +15,7 @@ contract Salon is Administrative {
         address speaker; //主讲人地址
         address sponsor; //赞助商（场地提供人）地址
         address[] participants; //参与者数组
-        mapping(address => uint) idx_participants;
+        mapping(address => uint) idx_participants; //参与者状态：0表示未报名；1表示已报名；2表示已报名并且现场已签到
         address[] questioner; //提问者数组
         mapping(address => address) QRMap; //提问-回答键值对
     }
@@ -111,11 +111,22 @@ contract Salon is Administrative {
         return true;
     }
 
-    //代理签到，需要管理员权限。参数为：沙龙id，签到人地址
-    function checkInByAdmin(uint _campaignID, address _who) external onlyPrivileged validCampaign(_campaignID){
-        if (addParticipant(_campaignID, _who, 2, true)) {
-            emit LogCheckedIn(_who);
-        }
+    //用户报名，并缴纳报名费
+    function register(uint _campaignID) external validCampaign(_campaignID) {
+        Campaign storage c = campaigns[_campaignID];
+        require(c.idx_participants[msg.sender] == 0, "已经完成报名");
+        salonToken.transferByAdministrator(msg.sender, address(this), registerFee * unit);
+        c.idx_participants[msg.sender] = 1;
+        emit LogRegister(msg.sender);
+    }
+
+    //签到入场。参数为：沙龙id，签到人地址
+    function checkin(uint _campaignID, address _who) external onlyPrivileged validCampaign(_campaignID){
+        Campaign storage c = campaigns[_campaignID];
+        require(c.idx_participants[_who] == 1, "尚未报名或已经签到成功");
+        c.participants.push(_who);
+        c.idx_participants[_who] = 2
+        emit LogCheckedIn(_who);
     }
 
     //添加场上问题。需要管理员权限，参数为：沙龙id，提问者，回答者
@@ -152,16 +163,5 @@ contract Salon is Administrative {
 
         c.end = true;
         emit LogClose(_campaignID, c.participants.length, c.questioner.length);
-    }
-
-    //用户自己签到，无权限。参数：沙龙id
-    //注：正式实施过程中建议去掉这个用户自己签到的接口。因为一旦有人知道这个接口，完全可以在家签到。
-    //可以使用上面的管理员代签来保证签到人员都到会场了。
-    function register(uint _campaignID) external validCampaign(_campaignID) {
-        if (addParticipant(_campaignID, msg.sender, 1, false)) {
-            //转账
-            salonToken.transferFrom(msg.sender, address(this), registerFee * unit);
-            emit LogRegister(msg.sender);
-        }
     }
 }
