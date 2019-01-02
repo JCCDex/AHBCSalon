@@ -94,23 +94,6 @@ contract Salon is Administrative {
         registerFee = _fee;
     }
 
-    // 阻止多次签到
-    function addParticipant(uint _campaignID, address _who, uint state, bool update) internal returns (bool) {
-        Campaign storage c = campaigns[_campaignID];
-        bool exist = c.idx_participants[_who] > 0 ? true : false;
-
-        // 如果要求更新但是有没有这个用户，或者要求添加但是该用户已经存在，则不处理返回false
-        if ((update && !exist) || (!update && exist) || (update && c.idx_participants[_who] == state) ) {
-            return false;
-        }
-        if (!update) {
-            c.participants.push(_who);
-        }
-        c.idx_participants[_who] = state;
-
-        return true;
-    }
-
     //用户报名，并缴纳报名费
     function register(uint _campaignID) external validCampaign(_campaignID) {
         Campaign storage c = campaigns[_campaignID];
@@ -125,7 +108,7 @@ contract Salon is Administrative {
         Campaign storage c = campaigns[_campaignID];
         require(c.idx_participants[_who] == 1, "尚未报名或已经签到成功");
         c.participants.push(_who);
-        c.idx_participants[_who] = 2
+        c.idx_participants[_who] = 2;
         emit LogCheckedIn(_who);
     }
 

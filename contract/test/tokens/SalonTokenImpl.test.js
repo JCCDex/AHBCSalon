@@ -1,5 +1,5 @@
-const web3 = require('web3');
-const BigNumber = require('bignumber.js');
+// const web3 = require('web3');
+// const BigNumber = require('bignumber.js');
 const SalonTokenImpl = artifacts.require('SalonTokenImpl');
 const SalonTokenStorage = artifacts.require('SalonTokenStorage');
 const assertRevert = require('../helpers/assertRevert');
