@@ -3,4 +3,5 @@
 .node*
 node_modules
 build
+.idea
 
