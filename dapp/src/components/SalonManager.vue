@@ -325,7 +325,6 @@ export default {
         this.message = "创建失败";
         this.color = "error";
       });
-      console.log(res);
       if (res) {
         this.message = "创建成功";
         this.color = "success";
@@ -340,7 +339,6 @@ export default {
     },
     scanForRegiste: async function() {
       let campaignID = await tp.invokeQRScanner();
-      console.log(campaignID);
       await this.getSalonInfo(campaignID);
     },
     toRegiste: async function() {
@@ -464,7 +462,6 @@ export default {
         Number(this.sponsorPercent) +
         Number(this.participantPercent) +
         Number(this.questionPercent);
-      console.log(sum);
       if (sum != 100) {
         this.message = "奖励比例总和必须为100%";
         this.snackbar = true;

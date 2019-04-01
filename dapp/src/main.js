@@ -6,14 +6,11 @@ import store from './store'
 import 'vuetify/dist/vuetify.min.css'
 import Web3 from 'web3'
 import Chain3 from 'chain3'
-import VConsole from 'vconsole'
 import VueClipboard from 'vue-clipboard2'
+// import VConsole from 'vconsole'
+// let vConsole = new VConsole();
 
-let vConsole = new VConsole();
 Vue.use(VueClipboard)
-
-
-
 Vue.config.productionTip = false
 
 if (process.env.VUE_APP_NETWORK === 'MOAC') {
