@@ -3,16 +3,20 @@
 需.env文件配置
 
 ### MOAC
+```
 VUE_APP_NETWORK = 'MOAC'
 VUE_APP_TOKEN_ADDRESS_MOAC = ''  // 沙龙token地址
 VUE_APP_SALON_ADDRESS_MOAC = ''  //沙龙合约地址
 VUE_APP_SALON_VNODE_MOAC = ''  //节点url
+```
 
 ### ETH
+```
 VUE_APP_NETWORK = 'ETH'
 VUE_APP_TOKEN_ADDRESS = ''  // 沙龙token地址
 VUE_APP_SALON_ADDRESS = '' //沙龙合约地址
 VUE_APP_SALON_VNODE ='' //节点url
+```
 
 ## Project setup
 ```
