@@ -64,13 +64,13 @@
             v-clipboard:success="onCopy"
             v-clipboard:error="onError"
           >
-            <v-layout row wrap>
-              <v-flex xs2>
+            <v-card-text class="text-xs-center">
+              <div style="margin-top: -18px;">
                 <span :class="[isAdmin ? 'orange--text subheading':'subheading']">{{name}}</span>
                 <br>
                 <span class="caption font-weight-thin">{{subAddress}}</span>
-              </v-flex>
-            </v-layout>
+              </div>
+            </v-card-text>
           </v-btn>
         </div>
       </v-card-text>
