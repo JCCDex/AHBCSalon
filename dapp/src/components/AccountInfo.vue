@@ -65,7 +65,7 @@
             v-clipboard:error="onError"
           >
             <v-card-text class="text-xs-center">
-              <div style="margin-top: -18px;">
+              <div style="margin-top: -20px;">
                 <span :class="[isAdmin ? 'orange--text subheading':'subheading']">{{name}}</span>
                 <br>
                 <span class="caption font-weight-thin">{{subAddress}}</span>
