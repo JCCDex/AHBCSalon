@@ -110,7 +110,6 @@ const Salon = {
             who: self.fromAddress
           }, function (error, result) {
             if (!error) {
-              console.log(result);
               resolve(true);
             } else {
               reject(false)
