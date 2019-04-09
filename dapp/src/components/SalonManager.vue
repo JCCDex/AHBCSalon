@@ -267,6 +267,7 @@
 </template>
 
 <script>
+import SalonToken from "../js/SalonToken";
 import Salon from "../js/Salon";
 import tp from "tp-js-sdk";
 
@@ -342,6 +343,13 @@ export default {
       await this.getSalonInfo(campaignID);
     },
     toRegiste: async function() {
+      let balance = await SalonToken.getTokenBalance();
+      if (balance < Number(this.registerFee)) {
+        this.message = "抱歉,报名费(ABST)不足!";
+        this.color = "warning";
+        this.snackbar = true;
+        return;
+      }
       const res = await Salon.registe(this.salons.campaignID).catch(err => {
         console.log(err);
       });
@@ -365,6 +373,7 @@ export default {
         } else {
           this.message = "请使用ETH钱包";
         }
+        this.color = "warning";
         this.snackbar = true;
         return;
       }
