@@ -20,6 +20,7 @@
   "homepage": "https://github.com/JCCDex/AHBCSalon",
   "dependencies": {
     "chain3": "^0.1.16",
+    "qrcode": "^1.3.3",
     "tp-js-sdk": "^3.0.1",
     "vue": "^2.6.6",
     "vue-clipboard2": "^0.3.0",
